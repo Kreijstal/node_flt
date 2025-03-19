@@ -27,6 +27,16 @@ function encodeInt32LE(value) {
     
     return bytes;
 }
+function encodeInt16LE(value) {
+    // Create a buffer of 4 bytes (32 bits)
+    const bytes = new Uint8Array(2);
+    
+    // Write the value to the array in little-endian format
+    bytes[0] = value & 0xFF;           // Least significant byte
+    bytes[1] = (value >> 8) & 0xFF;    // Second byte
+    
+    return bytes;
+}
 function createByteArray(strings, sqlmatch,row) {
     const encoder = new TextEncoder();
     
@@ -61,7 +71,7 @@ function createByteArray(strings, sqlmatch,row) {
     
     // Build the array part if input is an array
     const arrayPart = isArray 
-        ? [0x01, 0x02, strings.length]
+        ? (strings.length<0x80?[0x01, 0x02, strings.length]:[0x01, 0x03, ...encodeInt16LE(strings.length)])
         : [];
     
     // Build the strings part

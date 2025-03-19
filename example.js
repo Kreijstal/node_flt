@@ -35,7 +35,7 @@ var jsonFilter = {
   conditions: [
     {
       type: 'condition',
-      value: ['Hallo'],
+      value: Array(501).fill(0).map((i,k)=>k.toString()),
       matchType: 'IN_LIST',
       row: 44
     }]
@@ -48,7 +48,7 @@ console.log('FLT-Argumente:', fltArgs.getArgs());
 // Erstellen des FLT-Filters (Byte-Array)
 var fltBuffer = createFlt(...fltArgs.getArgs());
 console.log('FLT-Puffer:', fltBuffer);
-//saveUint8ArrayToFile(fltBuffer,"fromjson.flt")
+saveUint8ArrayToFile(fltBuffer,"fromjson500.flt")
 
 // Konvertieren des FLT-Filters zurück in JSON
 const convertedJsonFilter = fltToJson(fltArgs.getArgs());
