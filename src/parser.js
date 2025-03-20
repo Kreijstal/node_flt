@@ -149,7 +149,7 @@ function parseCondition(buffer, offset) {
     } else {
         throw new Error(`Expected array or string marker at offset ${nextOffset}`);
     }
-    
+    //console.log(`offset parseCondition ${nextOffset}`)
     return {
         value: {
             type: 'condition',
@@ -199,8 +199,9 @@ function parseGroup(buffer, offset) {
     const items = [];
     for (let i = 0; i < itemCount; i++) {
         // Check item type marker
-        if (buffer[currentOffset] === 0x00 && buffer[currentOffset + 1] === 0x00) { // Condition
-            currentOffset += 2; // Skip 00 00
+        if (buffer[currentOffset] === 0x00) { // Condition
+            currentOffset += 1; // Skip 00
+            while(buffer[currentOffset] === 0x00){currentOffset++}
             const result = parseCondition(buffer, currentOffset);
             items.push(result.value);
             currentOffset = result.offset;
@@ -210,7 +211,16 @@ function parseGroup(buffer, offset) {
             items.push(result.value);
             currentOffset = result.offset;
         } else {
-            throw new Error(`Unexpected item marker: ${buffer[currentOffset]}`);
+            // Print parsed state for debugging
+            const parsedState = {
+                items,
+                currentOffset,
+                realBuffer:buffer,
+                buffer: buffer.slice(offset, currentOffset + 1),
+                logicalOp,
+                itemCount
+            };
+            throw new Error(`Unexpected item marker: ${buffer[currentOffset]}\nParsed state: ${JSON.stringify(parsedState, null, 2)}`);
         }
     }
     

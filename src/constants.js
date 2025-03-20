@@ -1,5 +1,6 @@
 /**
- * Maps SQL comparison operations to their byte values
+ * Available SQL comparison operations. The numerical values are implementation details and not important.
+ * Use this enum to know what options are available.
  */
 const MATCH_TYPES = {
     'EQUALS': 0x0,
