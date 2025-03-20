@@ -76,39 +76,31 @@ const {
 ```
 
 ### Supported Operations and Match Types
-The library supports the following operations and match types, defined in `constants.js`:
+The library provides the following operations and match types:
 
-#### Logical Operations
-```js
-{
-  'AND': 0,
-  'OR': 1,
-  'NAND': 2,
-  'NOR': 3
-}
-```
+#### Supported Logical Operations
+- `AND`
+- `OR`
+- `NAND`
+- `NOR`
 
-#### Comparison Operations (Match Types)
-```js
-{
-  'EQUALS': 0x0,
-  'NOT_EQUALS': 0x1,
-  'SMALLER': 0x2,
-  'SMALLER_EQUALS': 0x3,
-  'BIGGER': 0x4,
-  'BIGGER_EQUALS': 0x5,
-  'LIKE': 0x6,
-  'NOT_LIKE': 0x7,
-  'BETWEEN': 0x8,
-  'NOT_BETWEEN': 0x9,
-  'IN_LIST': 0xa,
-  'NOT_IN_LIST': 0xb,
-  'CONTAINS': 0xe,
-  'NOT_CONTAINS': 0xf,
-  'STARTS_WITH': 0x24,
-  'ENDS_WITH': 0x25
-}
-```
+#### Supported Comparison Operations
+- `EQUALS`
+- `NOT_EQUALS`
+- `SMALLER`
+- `SMALLER_EQUALS`
+- `BIGGER`
+- `BIGGER_EQUALS`
+- `LIKE`
+- `NOT_LIKE`
+- `BETWEEN`
+- `NOT_BETWEEN`
+- `IN_LIST`
+- `NOT_IN_LIST`
+- `CONTAINS`
+- `NOT_CONTAINS`
+- `STARTS_WITH`
+- `ENDS_WITH`
 
 ### Basic Usage
 ```js
