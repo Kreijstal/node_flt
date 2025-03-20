@@ -1,5 +1,5 @@
-const { jsonToFltArgs, fltToJson, normalizeFilter } = require('./lib.js');
-const { createFlt } = require('./utils.js');
+const { jsonToFltArgs, fltToJson, normalizeFilter } = require('../src/lib.js');
+const { createFlt } = require('../src/utils.js');
 
 /**
  * Detailed object comparison with path tracking

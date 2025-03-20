@@ -2,9 +2,10 @@
   "name": "flt-lib",
   "version": "1.0.0",
   "description": "A library for creating and manipulating filter byte arrays.",
-  "main": "lib.js",
+  "main": "src/lib.js",
   "scripts": {
-    "test": "node lib.test.js"
+    "test": "node tests/lib.test.js",
+    "convert": "node examples/convert.js"
   },
   "keywords": ["filter", "byte-array", "database"],
   "author": "",

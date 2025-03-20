@@ -1,5 +1,25 @@
 const { MATCH_TYPES, OPERATIONS, MATCH_TYPES_REVERSE, OPERATIONS_REVERSE } = require('./constants.js');
 const { createFlt } = require('./utils.js');
+const { parseFlt } = require('./parser.js');
+
+/**
+ * Convert JSON filter to FLT byte array
+ * @param {Object} jsonFilter - Filter in JSON format
+ * @returns {Uint8Array} - FLT file bytes
+ */
+function jsonToByteArray(jsonFilter) {
+  const args = jsonToFltArgs(jsonFilter).getArgs();
+  return createFlt(...args);
+}
+
+/**
+ * Convert FLT byte array to JSON filter
+ * @param {Uint8Array} buffer - FLT file bytes 
+ * @returns {Object} - Filter in JSON format
+ */
+function byteArrayToJson(buffer) {
+  return parseFlt(buffer);
+}
 
 /**
  * Converts a JSON filter object to arguments for createFlt
@@ -152,9 +172,12 @@ async function saveUint8ArrayToFile(uint8Array, filename) {
 }
 
 module.exports = {
-    jsonToFltArgs,
-    saveUint8ArrayToFile,
-    fltToJson,
-    normalizeFilter,
-    createFlt
+  jsonToFltArgs,
+  saveUint8ArrayToFile,
+  fltToJson,
+  normalizeFilter,
+  createFlt,
+  jsonToByteArray,
+  byteArrayToJson,
+  parseFlt
 };

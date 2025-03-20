@@ -5,6 +5,16 @@
 
 ## Usage
 
+To convert between FLT files and JSON:
+
+```bash
+# Convert all .flt files in directory to JSON
+npm run convert
+
+# Convert a JSON file to FLT (using example.js)
+node example.js
+```
+
 The library provides functions for converting a JSON filter object to FLT files and vice versa. It supports various comparison operations and logical operations, defined in `constants.js`.
 
 ### Example JSON Filter
