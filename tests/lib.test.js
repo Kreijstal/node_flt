@@ -1,4 +1,4 @@
-const { jsonToFltArgs, fltToJson, normalizeFilter } = require('../src/lib.js');
+const { jsonToFltArgs, fltToJson, normalizeFilter, parseFlt } = require('../src/lib.js');
 const { createFlt } = require('../src/utils.js');
 
 /**
@@ -125,35 +125,32 @@ function stripDefaults(filter) {
  return stripped;
 }
 
-/**
- * Test roundtrip conversion with normalization and sorted keys
- */
-function testRoundtripConversion() {
-  const testCases = [
-    {
-      name: "Simple equals condition",
-      filter: {
-        operation: "AND",
-        conditions: [{
-          type: "condition",
-          value: "test",
-          matchType: "EQUALS",
-          row: 1
-        }]
-      }
-    },
-    {
-      name: "List condition",
-      filter: {
-        operation: "OR",
-        conditions: [{
-          type: "condition",
-          value: ["A", "B", "C"],
-          matchType: "IN_LIST",
-          row: 2
-        }]
-      }
-    },
+// Shared test cases for both conversion and fixture tests
+const testCases = [
+  {
+    name: "Simple equals condition",
+    filter: {
+      operation: "AND",
+      conditions: [{
+        type: "condition",
+        value: "test",
+        matchType: "EQUALS",
+        row: 1
+      }]
+    }
+  },
+  {
+    name: "List condition",
+    filter: {
+      operation: "OR",
+      conditions: [{
+        type: "condition",
+        value: ["A", "B", "C"],
+        matchType: "IN_LIST",
+        row: 2
+      }]
+    }
+  },
     {
       name: "Complex nested filter",
       filter: {
@@ -187,7 +184,10 @@ function testRoundtripConversion() {
       }
     }
   ];
-
+  /**
+ * Test roundtrip conversion with normalization and sorted keys
+ */
+function testRoundtripConversion() {
   let allTestsPassed = true;
 
   testCases.forEach((testCase, index) => {
@@ -237,3 +237,28 @@ function testRoundtripConversion() {
 
 // Run the tests
 testRoundtripConversion();
+
+// Test conversion using in-memory test cases
+function testFixtureConversions() {
+  testCases.forEach((testCase, index) => {
+    console.log(`\nTesting Fixture ${index + 1}: ${testCase.name}`);
+    
+    try {
+      // Convert test case filter to FLT bytes
+      const fltArgs = jsonToFltArgs(testCase.filter);
+      const generatedBytes = new Uint8Array(createFlt(...fltArgs.getArgs()));
+      
+      // Parse bytes back to FLT args
+      const parsedJson = parseFlt(generatedBytes);
+      console.log(`✅ Generated ${generatedBytes.length} bytes`);
+      console.log(parsedJson)
+      
+    } catch (error) {
+      console.error(`❌ Failed to process fixture:`, error);
+      throw error;
+    }
+  });
+}
+
+// Run new tests
+testFixtureConversions();
