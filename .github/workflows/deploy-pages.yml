@@ -27,10 +27,7 @@ jobs:
       run: npm install
       
     - name: Build web assets
-      run: |
-        npm run build
-        mkdir -p dist
-        cp -r web/* dist/
+      run: npm run build
         
     - name: Setup Pages
       uses: actions/configure-pages@v4

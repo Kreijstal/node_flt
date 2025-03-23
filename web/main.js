@@ -1,1 +1,44 @@
-(()=>{var t={215:(t,e,n)=>{const{MATCH_TYPES:r,OPERATIONS:o,MATCH_TYPES_REVERSE:i,OPERATIONS_REVERSE:a}=n(521),{createFlt:s}=n(413),{parseFlt:c}=n(417);function u(t){const e=t.head||[254,255,255,255],n=t.operation?o[t.operation.toUpperCase()]:o.AND;if(void 0===n)throw new Error(`Invalid operation: ${t.operation}. Valid operations are: ${Object.keys(o).join(", ")}`);return{tuples:t.conditions.map((t=>{if("group"===t.type)return[1,u({conditions:t.conditions,operation:t.operation,head:t.head||[1]}).tuples,o[t.operation?.toUpperCase()]||o.AND,t.head||[1]];{const e=r[t.matchType.toUpperCase()];if(void 0===e)throw new Error(`Invalid match type: ${t.matchType}. Valid types are: ${Object.keys(r).join(", ")}`);return[0,t.value,e,t.row||0]}})),operation:n,head:e,getArgs(){return[this.tuples,this.operation,this.head]}}}t.exports={jsonToFltArgs:u,saveUint8ArrayToFile:async function(t,e){if("undefined"==typeof window){const r=n(603).promises;try{await r.writeFile(e,Buffer.from(t)),console.log(`File ${e} has been saved successfully`)}catch(t){throw console.error("Error saving file:",t),t}}else{const n=new Blob([t],{type:"application/octet-stream"}),r=window.URL.createObjectURL(n),o=document.createElement("a");o.href=r,o.download=e,document.body.appendChild(o),o.click(),document.body.removeChild(o),window.URL.revokeObjectURL(r)}},fltToJson:function t([e,n,r]){return{operation:a[n]||"AND",head:r,conditions:e.map((e=>{const[n,...r]=e;if(1===n){const[e,n,o]=r;return{type:"group",operation:a[n],head:o,conditions:t([e,n,o]).conditions}}{const[t,e,n]=r;return{type:"condition",value:t,matchType:i[e],row:n}}}))}},normalizeFilter:function t(e){const n=JSON.parse(JSON.stringify(e));return n.head=n.head||[254,255,255,255],n.conditions=n.conditions.map((e=>("group"===e.type&&(e.head=e.head||[1],e.conditions=t({operation:e.operation,conditions:e.conditions}).conditions),e))),n},createFlt:s,jsonToByteArray:function(t){const e=u(t).getArgs();return s(...e)},byteArrayToJson:function(t){return c(t)},parseFlt:c}},413:t=>{function e(t){const e=new Uint8Array(2*t.length);for(let n=0;n<t.length;n++){const r=t.charCodeAt(n);e[2*n]=255&r,e[2*n+1]=r>>8}return e}function n(t){const e=new Uint8Array(4);return e[0]=255&t,e[1]=t>>8&255,e[2]=t>>16&255,e[3]=t>>24&255,e}function r(t){const e=new Uint8Array(2);return e[0]=255&t,e[1]=t>>8&255,e}function o(t,o,i){const a=new TextEncoder,s=Array.isArray(t),c=s?t.join(";"):t,u=[0,0,...a.encode("DXUFMT"),o,...n(c.length)],f=[...e(c),...n(i),0,0,0,0],l=s?t.length<128?[1,2,t.length]:[1,3,...r(t.length)]:[],d=s?Array.prototype.concat.apply([],t.map((t=>[18,...n(t.length),...e(t)]))):[18,...n(t.length),...e(t)];return new Uint8Array([...u,...f,...l,...d])}t.exports={encodeUTF16LE:e,encodeInt32LE:n,createByteArray:o,createFlt:function t(e,n,r){return[...r,n,e.length,0,0,...e.flatMap((e=>0==e.shift()?Array.from(o(...e)):Array.from(t(...e,[1]))))]}}},417:(t,e,n)=>{const{MATCH_TYPES_REVERSE:r,OPERATIONS_REVERSE:o}=n(521);function i(t,e,n){let r="";const o=e+2*n;for(let n=e;n<o;n+=2){const e=t[n],o=t[n+1]||0;r+=String.fromCharCode(o<<8|e)}return r}function a(t,e){return t[e]|t[e+1]<<8|t[e+2]<<16|t[e+3]<<24}function s(t,e){return t[e]|t[e+1]<<8}function c(t,e){if(18!==t[e])throw new Error(`Expected string marker 0x12 at offset ${e}, found ${t[e].toString(16)}`);const n=a(t,e+1);return{value:i(t,e+5,n),offset:e+5+2*n}}function u(t,e){const n=String.fromCharCode(...t.slice(e,e+6));if("DXUFMT"!==n)throw new Error(`Expected magic string "DXUFMT" at offset ${e}, found "${n}"`);const o=t[e+6],u=a(t,e+7),f=i(t,e+11,u),l=a(t,e+11+2*u);let d,p=e+11+2*u+4+4,E=!1;if(1===t[p]){const e=function(t,e){if(1!==t[e])throw new Error(`Expected array marker 0x01 at offset ${e}, found ${t[e].toString(16)}`);let n,r;if(2===t[e+1])n=t[e+2],r=e+3;else{if(3!==t[e+1])throw new Error(`Expected array size marker 0x02 or 0x03 at offset ${e+1}, found ${t[e+1].toString(16)}`);n=s(t,e+2),r=e+4}const o=[];for(let e=0;e<n;e++){const e=c(t,r);o.push(e.value),r=e.offset}return{value:o,offset:r}}(t,p);d=e.value,p=e.offset,E=!0}else{if(18!==t[p])throw new Error(`Expected array or string marker at offset ${p}`);{const e=c(t,p);d=e.value,p=e.offset}}return{value:{type:"condition",matchType:r[o]||`UNKNOWN(${o})`,row:l,value:d,isArray:E,originalString:f},offset:p}}function f(t,e){let n=e;const r=o[t[n]]||`UNKNOWN(${t[n]})`;n+=1;const i=s(t,n);if(n+=2,0!==t[n])throw new Error("Invalid group padding");n+=1;const a=[];for(let o=0;o<i;o++)if(0===t[n]){for(n+=1;0===t[n];)n++;const e=u(t,n);a.push(e.value),n=e.offset}else{if(1!==t[n]){const o={items:a,currentOffset:n,realBuffer:t,buffer:t.slice(e,n+1),logicalOp:r,itemCount:i};throw new Error(`Unexpected item marker: ${t[n]}\nParsed state: ${JSON.stringify(o,null,2)}`)}{n+=1;const e=f(t,n);a.push(e.value),n=e.offset}}return{value:{type:"group",operation:r,items:a},offset:n}}t.exports={decodeUTF16LE:i,decodeInt32LE:a,parseFlt:function(t){let e=0;return t.length>=4&&254===t[0]&&255===t[1]&&255===t[2]&&255===t[3]&&(e=4),f(t,e).value}}},521:t=>{const e={EQUALS:0,NOT_EQUALS:1,SMALLER:2,SMALLER_EQUALS:3,BIGGER:4,BIGGER_EQUALS:5,LIKE:6,NOT_LIKE:7,BETWEEN:8,NOT_BETWEEN:9,IN_LIST:10,NOT_IN_LIST:11,CONTAINS:14,NOT_CONTAINS:15,STARTS_WITH:36,ENDS_WITH:37},n={AND:0,OR:1,NAND:2,NOR:3},r=t=>{const e={};for(const n in t)e[t[n]]=n;return e},o=r(e),i=r(n);t.exports={MATCH_TYPES:e,OPERATIONS:n,MATCH_TYPES_REVERSE:o,OPERATIONS_REVERSE:i}},603:()=>{}},e={};function n(r){var o=e[r];if(void 0!==o)return o.exports;var i=e[r]={exports:{}};return t[r](i,i.exports,n),i.exports}n.n=t=>{var e=t&&t.__esModule?()=>t.default:()=>t;return n.d(e,{a:e}),e},n.d=(t,e)=>{for(var r in e)n.o(e,r)&&!n.o(t,r)&&Object.defineProperty(t,r,{enumerable:!0,get:e[r]})},n.o=(t,e)=>Object.prototype.hasOwnProperty.call(t,e),(()=>{"use strict";var t=n(215);document.getElementById("convertToFlt").addEventListener("click",(()=>{try{const e=document.getElementById("jsonInput").value,n=JSON.parse(e),r=(0,t.jsonToByteArray)(n);(0,t.saveUint8ArrayToFile)(r,"filter.flt"),document.getElementById("jsonOutput").textContent="Conversion successful! Downloading filter.flt..."}catch(t){document.getElementById("jsonOutput").textContent=`Error: ${t.message}`}})),document.getElementById("fltUpload").addEventListener("change",(e=>{const n=e.target.files[0];if(!n)return;const r=new FileReader;r.onload=e=>{try{const n=e.target.result,r=new Uint8Array(n),o=(0,t.byteArrayToJson)(r);document.getElementById("fltOutput").textContent=JSON.stringify(o,null,2)}catch(t){document.getElementById("fltOutput").textContent=`Error: ${t.message}`}},r.readAsArrayBuffer(n)}))})()})();
+import { jsonToByteArray, byteArrayToJson, saveUint8ArrayToFile } from '../src/lib.js';
+
+// JSON to FLT Conversion
+document.getElementById('convertToFlt').addEventListener('click', () => {
+    try {
+        const jsonInput = document.getElementById('jsonInput').value;
+        const json = JSON.parse(jsonInput);
+        
+        // Convert to FLT
+        const fltBytes = jsonToByteArray(json);
+        
+        // Download the FLT file
+        saveUint8ArrayToFile(fltBytes, 'filter.flt');
+        
+        // Show success message
+        document.getElementById('jsonOutput').textContent = 'Conversion successful! Downloading filter.flt...';
+    } catch (error) {
+        document.getElementById('jsonOutput').textContent = `Error: ${error.message}`;
+    }
+});
+
+// FLT to JSON Conversion
+document.getElementById('fltUpload').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            // Convert ArrayBuffer to Uint8Array
+            const arrayBuffer = e.target.result;
+            const uint8Array = new Uint8Array(arrayBuffer);
+            
+            // Convert to JSON
+            const json = byteArrayToJson(uint8Array);
+            
+            // Display the JSON
+            document.getElementById('fltOutput').textContent = JSON.stringify(json, null, 2);
+        } catch (error) {
+            document.getElementById('fltOutput').textContent = `Error: ${error.message}`;
+        }
+    };
+    reader.readAsArrayBuffer(file);
+});
