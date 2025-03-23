@@ -5,9 +5,16 @@
   "main": "src/lib.js",
   "scripts": {
     "test": "node tests/lib.test.js",
-    "convert": "node examples/convert.js"
+    "convert": "node examples/convert.js",
+    "build": "webpack --mode production",
+    "dev": "webpack serve --mode development"
   },
   "keywords": ["filter", "byte-array", "database"],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
 }
