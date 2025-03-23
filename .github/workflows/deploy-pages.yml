@@ -22,6 +22,7 @@ jobs:
     - name: Build web assets
       run: |
         npm run build
+        mkdir -p dist
         cp -r web/* dist/
         
     - name: Deploy to GitHub Pages
