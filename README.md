@@ -69,7 +69,6 @@ npm install flt-lib
 ```js
 const {
   jsonToByteArray, // Convert JSON filter to FLT byte array
-  byteArrayToJson, // Convert FLT byte array back to JSON
   saveUint8ArrayToFile, // Save byte array to .flt file
   parseFlt // Parse FLT bytes to JSON
 } = require('flt-lib');

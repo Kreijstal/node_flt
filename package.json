@@ -7,7 +7,7 @@
     "test": "node tests/lib.test.js",
     "convert": "node examples/convert.js",
     "build": "webpack --mode production",
-    "postbuild": "mkdir -p dist && cp -r web/* dist/",
+    "postbuild": "mkdir -p dist && cp -r web/index.html dist/",
     "dev": "webpack serve --mode development"
   },
   "keywords": ["filter", "byte-array", "database"],
