@@ -141,21 +141,34 @@ function normalizeFilter(filter) {
   return normalized;
 }
 
-function saveUint8ArrayToFile(uint8Array, filename) {
-  // Browser implementation
-  const blob = new Blob([uint8Array], { type: 'application/octet-stream' });
-  const url = window.URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  
-  // Append to body, click, and remove
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  
-  // Clean up the URL
-  window.URL.revokeObjectURL(url);
+async function saveUint8ArrayToFile(uint8Array, filename) {
+  // Check if we're in Node.js environment
+  if (typeof window === 'undefined') {
+    // Node.js implementation
+    const fs = require('fs').promises;
+    try {
+      await fs.writeFile(filename, Buffer.from(uint8Array));
+      console.log(`File ${filename} has been saved successfully`);
+    } catch (error) {
+      console.error('Error saving file:', error);
+      throw error;
+    }
+  } else {
+    // Browser implementation
+    const blob = new Blob([uint8Array], { type: 'application/octet-stream' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    
+    // Append to body, click, and remove
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Clean up the URL
+    window.URL.revokeObjectURL(url);
+  }
 }
 
 module.exports = {
