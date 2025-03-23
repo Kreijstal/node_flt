@@ -1,4 +1,4 @@
-import { jsonToByteArray, byteArrayToJson, saveUint8ArrayToFile } from '../src/lib.js';
+import { jsonToByteArray, byteArrayToJson, saveUint8ArrayToFile, prettyPrintJson } from '../src/lib.js';
 
 // JSON to FLT Conversion
 document.getElementById('convertToFlt').addEventListener('click', () => {
@@ -13,6 +13,7 @@ document.getElementById('convertToFlt').addEventListener('click', () => {
         saveUint8ArrayToFile(fltBytes, 'filter.flt');
         
         // Show success message
+        
         document.getElementById('jsonOutput').textContent = 'Conversion successful! Downloading filter.flt...';
     } catch (error) {
         document.getElementById('jsonOutput').textContent = `Error: ${error.message}`;
@@ -34,8 +35,8 @@ document.getElementById('fltUpload').addEventListener('change', (event) => {
             // Convert to JSON
             const json = byteArrayToJson(uint8Array);
             
-            // Display the JSON
-            document.getElementById('fltOutput').textContent = JSON.stringify(json, null, 2);
+            // Display the JSON with pretty printing
+            document.getElementById('fltOutput').textContent = prettyPrintJson(json, 2, true);
         } catch (error) {
             document.getElementById('fltOutput').textContent = `Error: ${error.message}`;
         }

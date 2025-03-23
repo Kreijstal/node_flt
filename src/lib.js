@@ -8,8 +8,20 @@ const { parseFlt } = require('./parser.js');
  * @returns {Uint8Array} - FLT file bytes
  */
 function jsonToByteArray(jsonFilter) {
-  const args = jsonToFltArgs(jsonFilter).getArgs();
-  return createFlt(...args);
+  if (!jsonFilter || typeof jsonFilter !== 'object') {
+    throw new Error('Invalid input: expected a JSON object');
+  }
+  
+  if (!jsonFilter.conditions || !Array.isArray(jsonFilter.conditions)) {
+    throw new Error('Invalid input: conditions array is required');
+  }
+
+  try {
+    const args = jsonToFltArgs(jsonFilter).getArgs();
+    return createFlt(...args);
+  } catch (error) {
+    throw new Error(`Failed to convert JSON to FLT: ${error.message}`);
+  }
 }
 
 /**
@@ -142,6 +154,8 @@ function normalizeFilter(filter) {
 }
 
 async function saveUint8ArrayToFile(uint8Array, filename) {
+  // Verify uint8Array is actually a Uint8Array
+
   // Check if we're in Node.js environment
   if (typeof window === 'undefined') {
     // Node.js implementation
@@ -154,8 +168,10 @@ async function saveUint8ArrayToFile(uint8Array, filename) {
       throw error;
     }
   } else {
-    // Browser implementation
-    const blob = new Blob([uint8Array], { type: 'application/octet-stream' });
+    // Browser implementation - create proper binary blob
+    // Ensure we have a proper Uint8Array
+    const arrayBuffer =new Uint8Array(uint8Array.buffer || uint8Array);
+    const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -171,6 +187,24 @@ async function saveUint8ArrayToFile(uint8Array, filename) {
   }
 }
 
+/**
+ * Pretty print JSON with customizable formatting
+ * @param {Object} json - The JSON object to format
+ * @param {number} [indent=2] - Number of spaces for indentation
+ * @param {boolean} [sortKeys=false] - Whether to sort object keys alphabetically
+ * @returns {string} - Formatted JSON string
+ */
+function prettyPrintJson(json, indent = 2, sortKeys = false) {
+  if (sortKeys) {
+    const sorted = {};
+    Object.keys(json).sort().forEach(key => {
+      sorted[key] = json[key];
+    });
+    json = sorted;
+  }
+  return JSON.stringify(json, null, indent);
+}
+
 module.exports = {
   jsonToFltArgs,
   saveUint8ArrayToFile,
@@ -179,5 +213,6 @@ module.exports = {
   createFlt,
   jsonToByteArray,
   byteArrayToJson,
-  parseFlt
+  parseFlt,
+  prettyPrintJson
 };
