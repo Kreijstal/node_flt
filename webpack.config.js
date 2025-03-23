@@ -16,4 +16,9 @@ module.exports = {
     open: true,
     historyApiFallback: true,
   },
+  resolve: {
+    fallback: {
+      fs: false
+    }
+  }
 };
