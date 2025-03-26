@@ -15,8 +15,8 @@ const MATCH_TYPES = {
     'NOT_BETWEEN': 0x9,
     'IN_LIST': 0xa,
     'NOT_IN_LIST': 0xb,
-    'CONTAINS': 0xe,
-    'NOT_CONTAINS': 0xf,
+    'CONTAINS': 0x22,
+    'NOT_CONTAINS': 0x23,
     "STARTS_WITH":0x24,
     "ENDS_WITH":0x25
   };
