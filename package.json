@@ -12,7 +12,7 @@
   },
   "keywords": ["filter", "byte-array", "database"],
   "author": "",
-  "license": "AGLPv3",
+  "license": "AGPLv3",
   "devDependencies": {
     "webpack": "^5.89.0",
     "webpack-cli": "^6.0.0",
